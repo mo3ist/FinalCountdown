@@ -1,3 +1,7 @@
 from django.contrib import admin
 
-# Register your models here.
+class ExamAdmin(admin.ModelAdmin):
+	list_display = ['__str__']
+
+class ActivityAdmin(admin.ModelAdmin):
+	list_display = ['__str__']
