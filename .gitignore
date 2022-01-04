@@ -10,3 +10,4 @@ meida/*
 !media/.gitkeep
 *.ipynb
 .env
+/static/
