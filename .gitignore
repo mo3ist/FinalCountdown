@@ -1,0 +1,12 @@
+.vscode
+venv
+*/migrations/*
+!*/migrations/__init__.py
+*/__pycache__/
+__pycache__/
+db.sqlite3
+.ipynb_checkpoints/
+meida/*
+!media/.gitkeep
+*.ipynb
+.env
