@@ -22,8 +22,8 @@ def setup_periodic_tasks(sender, **kwargs):
     sender.add_periodic_task(10.0, send_periodic_emails_task.s(), name='send emails every 1 min')
 
 @app.task(name="send_initial_email_task")
-def send_initial_email_task(email, due_date):
-    emails.send_initial_email(email, due_date)
+def send_initial_email_task(email):
+    emails.send_initial_email(email)
     logger.info(f"INITIAL: An email was sent to'{email}'.")
     return True
 

@@ -37,7 +37,9 @@ def subscripe_view(request):
 				user = user_serializer.save()
 
 				# Send an initial sub email
-				send_initial_email_task.delay(user.email, "now")
+				send_initial_email_task.delay(user.email)
+
+				print("SENT")
 
 				# Send a goodluck email before each exam 
 				# sorted by due_date

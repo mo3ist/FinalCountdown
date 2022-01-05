@@ -1,0 +1,11 @@
+{% extends "base_email.html" %}
+
+{% block content %}
+<h3>فاضل</h3>
+<h4  style="font-weight: bold;">{{ countdown }} 🕒</h4>
+<h3>على</h3>
+<h4  style="font-weight: bold;">
+	<span style="border-bottom: 2px dashed;">{{ name }}</span>
+</h4>
+<p style="font: bold 26px Monospace; margin: 40px 0px;">{{ activity }}</p>
+{% endblock %}

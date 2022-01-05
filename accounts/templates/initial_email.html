@@ -1,0 +1,19 @@
+{% extends "base_email.html" %}
+
+{% block content %}
+
+<h3>شايف اللسته دي؟ 📜</h3>
+
+{% for exam in exams %}
+<h4>
+	<span style="border-bottom: 2px dashed;">{{ exam }}</span>
+</h4>
+{% endfor %}
+
+<p style="font: bold 26px Monospace; margin: 40px 0px;">
+	انا هفكرك بيها مرتين فاليوم 🙂
+</p>
+
+<a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" style="margin-bottom: 40px;">It's 2022 and I'm not sorry.</a>
+
+{% endblock %}
