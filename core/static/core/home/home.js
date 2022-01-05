@@ -4,6 +4,10 @@ const csrf_token = $("input[name=csrfmiddlewaretoken]").val()
 setInterval(() => {
 	for (var i=1; i<=exams.length; i++) {
 		var li = $(`#${i}`);
+		var daysElement = $(`#days-${i}`)
+		var hoursElement = $(`#hours-${i}`)
+		var minutesElement = $(`#minutes-${i}`)
+		var secondsElement = $(`#seconds-${i}`)
 
 		var delta = new Date(exams[i-1].due_date) - new Date()
 
@@ -18,9 +22,10 @@ setInterval(() => {
 
 		var seconds = Math.floor(delta / (1000));
 		
-		li.text(() => {
-			return  `${days.toString().padStart(2, "0")}D:${hours.toString().padStart(2, "0")}H:${minutes.toString().padStart(2, "0")}M:${seconds.toString().padStart(2, "0")}S`;
-		})
+		daysElement.text(() => {return days.toString().padStart(2, "0")})
+		hoursElement.text(() => {return hours.toString().padStart(2, "0")})
+		minutesElement.text(() => {return minutes.toString().padStart(2, "0")})
+		secondsElement.text(() => {return seconds.toString().padStart(2, "0")})
 	}
 }, 1000)
 
@@ -45,7 +50,7 @@ $("#unsub").click((e) => {
 		type: 'POST',
 		url: '/accounts/unsubscripe/',
 		data: {
-			'email': $("#email").val(),
+			'email': $("#user").val(),
 			'csrfmiddlewaretoken': csrf_token
 		}, 
 		success: (data) => {
@@ -53,3 +58,28 @@ $("#unsub").click((e) => {
 		}
 	})
 })
+
+
+
+// Hide carousel controls on first and last 
+$('#carousel').on('slid', '', checkitem);  // on caroussel move
+$('#carousel').on('slid.bs.carousel', '', checkitem); // on carousel move
+
+$(document).ready(function(){               // on document ready
+    checkitem();
+});
+
+function checkitem()                        // check function
+{
+    var $this = $('#carousel');
+    if($('.carousel-inner .carousel-item:first').hasClass('active')) {
+        $this.children('.carousel-control-prev').hide();
+        $this.children('.carousel-control-next').show();
+    } else if($('.carousel-inner .carousel-item:last').hasClass('active')) {
+        $this.children('.carousel-control-next').hide();
+        $this.children('.carousel-control-prev').show();
+    } else {
+        $this.children('.carousel-control-prev').show();
+        $this.children('.carousel-control-next').show();
+    } 
+}
