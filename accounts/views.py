@@ -4,10 +4,12 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
+from django.utils import timezone
 
 from accounts import serializers
 from accounts import models
-from conf.celery import send_initial_email_task
+from conf.celery import send_initial_email_task, send_goodluck_email_task
+from core import models as core_models
 
 @api_view(["POST"])
 def subscripe_view(request):
@@ -34,7 +36,26 @@ def subscripe_view(request):
 			if user_serializer.is_valid(raise_exception=True):
 				user = user_serializer.save()
 
+				# Send an initial sub email
 				send_initial_email_task.delay(user.email, "now")
+
+				# Send a goodluck email before each exam 
+				# sorted by due_date
+				for exam in core_models.Exam.objects.all():
+					after_1_hour = timezone.now() + timezone.timedelta(minutes=1)
+
+					hour_before_due = exam.due_date - timezone.timedelta(minutes=1)
+
+					# If the due date is more than 1 hour into the future, send a goodluck email
+					if exam.due_date > after_1_hour:
+						send_goodluck_email_task.apply_async(
+							args=[
+								user.email
+							],
+
+							# Send one hour before exam
+							eta=hour_before_due
+						)
 				
 				print(f"{user.is_subbed=}")
 

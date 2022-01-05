@@ -24,11 +24,17 @@ def setup_periodic_tasks(sender, **kwargs):
 @app.task(name="send_initial_email_task")
 def send_initial_email_task(email, due_date):
     emails.send_initial_email(email, due_date)
-    logger.info(f"An email was sent to'{email}'.")
+    logger.info(f"INITIAL: An email was sent to'{email}'.")
+    return True
+
+@app.task(name="send_goodluck_email_task")
+def send_goodluck_email_task(email):
+    emails.send_goodluck_email(email)
+    logger.info(f"GOODLUCK: An email was sent to'{email}'.")
     return True
 
 @app.task(name="send_periodic_emails_task")
 def send_periodic_emails_task():
     emails.send_periodic_emails()
-    logger.info(f"Emails were sent to users")
+    logger.info(f"PERIODIC: Emails were sent to users")
     return True
