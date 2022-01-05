@@ -1,9 +1,9 @@
 from django.core.mail import EmailMessage
-# from django.template import Context
-# from django.template.loader import render_to_string
 from django.conf import settings 
+from django.contrib.auth import get_user_model
+from django.core import mail
 
-def send_email(email, due_date):
+def send_initial_email(email, due_date):
 	
 	context = {
 		'email': email,
@@ -21,3 +21,24 @@ def send_email(email, due_date):
 	)
 
 	return email.send(fail_silently=False)
+
+def send_periodic_emails():
+	User = get_user_model()
+	connection = mail.get_connection()
+	connection.open()
+
+	emails = []
+	for user in User.objects.all():
+		if not user.is_admin:
+			email = mail.EmailMessage(
+				'Periodic Test',
+				'Done',
+				settings.EMAIL_HOST_USER,
+				[user.email],
+				# connection=connection
+			)
+			emails.append(email)
+	connection.send_messages(emails)
+
+	connection.close()
+	return True

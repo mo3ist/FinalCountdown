@@ -7,6 +7,7 @@ from rest_framework import status
 
 from accounts import serializers
 from accounts import emails
+from conf.celery import send_initial_email_task
 
 @api_view(["POST"])
 def create_view(request):
@@ -15,9 +16,11 @@ def create_view(request):
 			"email": request.data.get("email", None),
 		}
 		user_serializer = serializers.UserSerializer(data=data)
-		if user_serializer.is_valid():
+		if user_serializer.is_valid(raise_exception=True):
 			user = user_serializer.save()
-			emails.send_email(user.email, "now")
+
+			send_initial_email_task.delay(user.email, "now")
+			
 			return Response(user_serializer.data)
 		return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
