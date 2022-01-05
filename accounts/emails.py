@@ -29,7 +29,7 @@ def send_periodic_emails():
 
 	emails = []
 	for user in User.objects.all():
-		if not user.is_admin:
+		if not user.is_admin and user.is_subbed:
 			email = mail.EmailMessage(
 				'Periodic Test',
 				'Done',

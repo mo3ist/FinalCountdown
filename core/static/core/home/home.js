@@ -24,11 +24,26 @@ setInterval(() => {
 	}
 }, 1000)
 
-$("#submit").submit((e) => {
+$("#sub").click((e) => {
 	e.preventDefault();
 	$.ajax({
 		type: 'POST',
-		url: '/accounts/create/',
+		url: '/accounts/subscripe/',
+		data: {
+			'email': $("#email").val(),
+			'csrfmiddlewaretoken': csrf_token
+		}, 
+		success: (data) => {
+			console.log(data)
+		}
+	})
+})
+
+$("#unsub").click((e) => {
+	e.preventDefault();
+	$.ajax({
+		type: 'POST',
+		url: '/accounts/unsubscripe/',
 		data: {
 			'email': $("#email").val(),
 			'csrfmiddlewaretoken': csrf_token
