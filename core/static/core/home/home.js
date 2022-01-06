@@ -62,7 +62,7 @@ $("#form").submit((e) => {
 	
 			$.ajax({
 				type: 'POST',
-				url: '/accounts/subscripe/',
+				url: '/accounts/subscribe/',
 				headers: {'X-CSRFToken': csrf_token},
 				data: {
 					'email': $("#email").val(),
@@ -93,7 +93,7 @@ $("#form").submit((e) => {
 	
 			$.ajax({
 				type: 'POST',
-				url: '/accounts/unsubscripe/',
+				url: '/accounts/unsubscribe/',
 				headers: {'X-CSRFToken': csrf_token},
 				data: {
 					'email': $("#email").val(),

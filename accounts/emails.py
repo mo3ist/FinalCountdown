@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 from django.core import mail
 from django.utils import timezone
 from django.db.models import Q
+from decouple import config
 
 def send_initial_email(email):
 	
@@ -67,7 +68,7 @@ def send_periodic_emails():
 	last_due_exam = core_models.Exam.objects.all().first()
 
 	for user in User.objects.all():
-		after_1_hour = timezone.now() + timezone.timedelta(minutes=1)
+		after_1_hour = timezone.now() + timezone.timedelta(hours=1)
 
 		# Activities that has NOT been sent to user
 		activities = core_models.Activity.objects.filter(
@@ -83,6 +84,11 @@ def send_periodic_emails():
 		if not user.is_admin and user.is_subbed and last_due_exam.due_date > after_1_hour and activities:
 			timedelta = last_due_exam.due_date - timezone.now()
 			
+			hours = timedelta.seconds // (60*60)
+			minutes = (timedelta.seconds - (hours*60*60)) // 60
+			seconds = (timedelta.seconds - (hours*60*60) - (minutes*60))
+			countdown = f"{timedelta.days:02d}D {hours:02d}H {minutes:02d}M {seconds:02d}S"			
+
 			activity = activities.first()
 
 			# Add user not to send the activity again
@@ -90,13 +96,13 @@ def send_periodic_emails():
 
 			context = {
 				"name": last_due_exam.name,
-				"countdown": str(timedelta),
+				"countdown": countdown,
 				"activity": activity.text,
-				"unsub_url": "https://www.youtube.com"
+				"unsub_url": f"{config('HOSTNAME')}/accounts/unsubscribe/?email={user.email}"
 			}
 			html_body = render_to_string("periodic_email.html", context=context)
 			email = mail.EmailMessage(
-				f'فاضل {str(timedelta)} 🙂',
+				f' {countdown} فاضل 🙂',
 				html_body,
 				settings.EMAIL_HOST_USER,
 				[user.email],
@@ -108,4 +114,4 @@ def send_periodic_emails():
 		connection.send_messages(emails)
 
 	connection.close()
-	return True
+	return len(emails)

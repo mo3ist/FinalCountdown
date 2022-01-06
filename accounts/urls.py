@@ -3,6 +3,6 @@ from django.urls import path, include
 from accounts import views 
 
 urlpatterns = [
-	path('subscripe/', views.subscripe_view),
-	path('unsubscripe/', views.unsubscripe_view)
+	path('subscribe/', views.subscribe_view),
+	path('unsubscribe/', views.unsubscribe_view)
 ]

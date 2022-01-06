@@ -13,10 +13,7 @@ from conf.celery import send_initial_email_task, send_goodluck_email_task
 from core import models as core_models
 
 @api_view(["POST"])
-def subscripe_view(request):
-
-	print(request.data)
-
+def subscribe_view(request):
 	if request.is_ajax() and request.method == "POST":
 		data = {
 			"email": request.data.get("email", None),
@@ -70,7 +67,7 @@ def subscripe_view(request):
 	raise Http404
 
 @api_view(["POST", "GET"])
-def unsubscripe_view(request):
+def unsubscribe_view(request):
 	if request.is_ajax() and request.method == "POST":
 		data = {
 			"email": request.data.get("email", None),
