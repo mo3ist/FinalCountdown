@@ -15,7 +15,7 @@ def send_initial_email(email):
 	
 	context={
 		"exams": [x.name for x in exams],
-		"unsub_url": "https://www.youtube.com/"
+		"unsub_url": f"{config('HOSTNAME')}/accounts/unsubscribe/?email={email}"
 	}
 
 	html_body = render_to_string("initial_email.html", context=context)
@@ -40,7 +40,7 @@ def send_goodluck_email(email):
 	# If still subbed
 	if not user.is_admin and user.is_subbed:
 		context={
-			"unsub_url": "https://www.youtube.com/"
+			"unsub_url": f"{config('HOSTNAME')}/accounts/unsubscribe/?email={user.email}"
 		}
 		html_body = render_to_string("goodluck_email.html", context=context)
 
