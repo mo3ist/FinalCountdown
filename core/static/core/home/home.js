@@ -39,7 +39,12 @@ $("#sub").click((e) => {
 			'csrfmiddlewaretoken': csrf_token
 		}, 
 		success: (data) => {
-			console.log(data)
+
+			// Yeah, reloading with the current technologies
+			// I use it so bad that it's actually funny
+			
+			// But I don't have the time
+			location.reload()
 		}
 	})
 })
@@ -50,11 +55,11 @@ $("#unsub").click((e) => {
 		type: 'POST',
 		url: '/accounts/unsubscripe/',
 		data: {
-			'email': $("#user").val(),
+			'email': $("#email").val(),
 			'csrfmiddlewaretoken': csrf_token
 		}, 
 		success: (data) => {
-			console.log(data)
+			location.reload()
 		}
 	})
 })
