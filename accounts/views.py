@@ -14,6 +14,9 @@ from core import models as core_models
 
 @api_view(["POST"])
 def subscripe_view(request):
+
+	print(request.data)
+
 	if request.is_ajax() and request.method == "POST":
 		data = {
 			"email": request.data.get("email", None),
@@ -32,7 +35,7 @@ def subscripe_view(request):
 				user.is_subbed = True
 				user.save()
 
-			return Response(status=status.HTTP_200_OK)
+			return Response(data, status=status.HTTP_200_OK)
 
 		except:
 
@@ -41,7 +44,7 @@ def subscripe_view(request):
 				user = user_serializer.save()
 
 				# Send an initial sub email
-				# send_initial_email_task.delay(user.email)
+				send_initial_email_task.delay(user.email)
 
 				# Send a goodluck email before each exam 
 				# sorted by due_date
@@ -51,17 +54,17 @@ def subscripe_view(request):
 					hour_before_due = exam.due_date - timezone.timedelta(minutes=1)
 
 					# If the due date is more than 1 hour into the future, send a goodluck email
-					# if exam.due_date > after_1_hour:
-					# 	send_goodluck_email_task.apply_async(
-					# 		args=[
-					# 			user.email
-					# 		],
+					if exam.due_date > after_1_hour:
+						send_goodluck_email_task.apply_async(
+							args=[
+								user.email
+							],
 
-					# 		# Send one hour before exam
-					# 		eta=hour_before_due
-					# 	)
+							# Send one hour before exam
+							eta=hour_before_due
+						)
 				
-				return Response(status=status.HTTP_201_CREATED)
+				return Response(data, status=status.HTTP_201_CREATED)
 			return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 	raise Http404
@@ -73,23 +76,23 @@ def unsubscripe_view(request):
 			"email": request.data.get("email", None),
 		}
 
-		# try:
-		user = models.User.objects.get(email=data["email"])
-		
-		# Exception when user isn't subbed
-		assert user.is_subbed == True
-		user.is_subbed = False
-		user.save()
+		try:
+			user = models.User.objects.get(email=data["email"])
+			
+			# Exception when user isn't subbed
+			assert user.is_subbed == True
+			user.is_subbed = False
+			user.save()
 
-		# Additional logout
-		logout(request)
+			# Additional logout
+			logout(request)
 
-		return Response(status=status.HTTP_200_OK)
+			return Response(status=status.HTTP_200_OK)
 
-	# except:
+		except:
 
-		logout(request)
-		return Response(status=status.HTTP_400_BAD_REQUEST)
+			logout(request)
+			return Response(status=status.HTTP_400_BAD_REQUEST)
 	
 	if request.method == "GET":
 		# Unsub [source: email link]
