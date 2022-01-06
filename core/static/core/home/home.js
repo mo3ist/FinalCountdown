@@ -30,6 +30,7 @@ const timer = (initial=false) => {
 				var og_image = $(`#image-${i}`).attr('src')
 	
 				$(`#image-${i}`).attr('src', '/static/core/home/wasted.png')
+
 				$(`#image-${i}`).css('background-image', `url(${og_image})`)
 				$(`#image-${i}`).css('background-repeat', 'no-repeat')
 				$(`#image-${i}`).css('background-size', 'contain')
