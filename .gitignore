@@ -11,6 +11,5 @@ meida/*
 *.ipynb
 .env
 /static/
-/media/
 celerybeat-schedule
 dump.rdb
