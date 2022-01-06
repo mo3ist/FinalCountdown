@@ -1,1 +1,2 @@
 web: gunicorn conf.wsgi --log-file -
+celery: celery -A conf worker -B -l info
