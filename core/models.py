@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 
 class Exam(models.Model):
 	
@@ -14,6 +15,7 @@ class Exam(models.Model):
 
 class Activity(models.Model):
 	text = models.TextField()
+	users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="activities")
 
 	def __str__(self):
 		return self.text[:25]

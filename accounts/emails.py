@@ -4,7 +4,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core import mail
 from django.utils import timezone
-
+from django.db.models import Q
 
 def send_initial_email(email):
 	
@@ -69,18 +69,34 @@ def send_periodic_emails():
 	for user in User.objects.all():
 		after_1_hour = timezone.now() + timezone.timedelta(minutes=1)
 
+		# Activities that has NOT been sent to user
+		activities = core_models.Activity.objects.filter(
+			~Q(users=user)	# Django is smart enough to match "user" in M2M 
+		)
+
 		# send if it's more that 1 hours into the future
-		if not user.is_admin and user.is_subbed and last_due_exam.due_date > after_1_hour:
+		# Don't send if
+		# - User is admin
+		# - User isn't subbed
+		# - Due in less than 'after_1_hour'
+		# - No activities left
+		if not user.is_admin and user.is_subbed and last_due_exam.due_date > after_1_hour and activities:
 			timedelta = last_due_exam.due_date - timezone.now()
+			
+			activity = activities.first()
+
+			# Add user not to send the activity again
+			activity.users.add(user)
+
 			context = {
 				"name": last_due_exam.name,
 				"countdown": str(timedelta),
-				"activity": core_models.Activity.objects.first().text,
+				"activity": activity.text,
 				"unsub_url": "https://www.youtube.com"
 			}
 			html_body = render_to_string("periodic_email.html", context=context)
 			email = mail.EmailMessage(
-				'Periodic Test',
+				f'فاضل {str(timedelta)} 🙂',
 				html_body,
 				settings.EMAIL_HOST_USER,
 				[user.email],
