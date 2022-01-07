@@ -7,8 +7,7 @@ const timer = (initial=false) => {
 		var hoursElement = $(`#hours-${i}`)
 		var minutesElement = $(`#minutes-${i}`)
 		var secondsElement = $(`#seconds-${i}`)
-
-		var delta = new Date(exams[i-1].due_date) - new Date()
+		var delta = new Date(exams[exams.length - (i)].due_date) - new Date()
 		if (delta > 0) {
 			var days = Math.floor(delta / (1000 * 60 * 60 * 24)); 
 			delta -= Math.floor(days * (1000 * 60 * 60 * 24))

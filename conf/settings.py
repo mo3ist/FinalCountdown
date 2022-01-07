@@ -26,7 +26,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'yt0nv6t$q!8-tw%zt&_2s4c!+92!p5a&rdio@w(sswu(9pslkl'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config("DEBUG")
 
 ALLOWED_HOSTS = ["*"]
 
@@ -91,7 +91,8 @@ DATABASES = {
     }
 }
 
-DATABASES['default'] = dj_database_url.config(conn_max_age=600)
+if not DEBUG:
+	DATABASES['default'] = dj_database_url.config(conn_max_age=600)
 
 
 
@@ -162,4 +163,5 @@ CELERY_RESULT_SERIALIZER = "json"
 CELERY_TASK_SERIALIZER = "json"
 CELERY_TIMEZONE = "UTC"
 
-django_heroku.settings(locals())
+if not DEBUG:
+	django_heroku.settings(locals())
