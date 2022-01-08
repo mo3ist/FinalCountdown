@@ -8,7 +8,7 @@ class Exam(models.Model):
 
 	name = models.CharField(max_length=100)
 	due_date = models.DateTimeField()
-	image = models.ImageField(upload_to="core")
+	image = models.URLField()
 
 	def __str__(self):
 		return self.name
